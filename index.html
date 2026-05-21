@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaskFlow - Modern To-Do List</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="dark-theme">
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fa-solid fa-layer-group"></i>
+                    <span>TaskFlow</span>
+                </div>
+                <button class="toggle-sidebar" id="toggleSidebarBtn">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+            </div>
+            <nav class="sidebar-nav">
+                <ul id="sidebarNavList">
+                    <!-- Nav items injected by sidebar.js -->
+                </ul>
+            </nav>
+            <div class="sidebar-footer">
+                <button id="themeToggleBtn" class="theme-toggle">
+                    <i class="fa-solid fa-sun"></i>
+                    <span>Light Mode</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="top-header">
+                <div class="header-left">
+                    <button class="mobile-menu-btn" id="mobileMenuBtn">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                    <h1 id="pageTitle">Dashboard</h1>
+                    <p class="date-display" id="currentDate">Senin, 1 Jan 2024</p>
+                </div>
+                <div class="header-right">
+                    <div class="search-bar">
+                        <i class="fa-solid fa-search"></i>
+                        <input type="text" id="searchInput" placeholder="Cari tugas...">
+                    </div>
+                    <div class="user-profile">
+                        <img src="https://ui-avatars.com/api/?name=User&background=6366f1&color=fff" alt="User">
+                    </div>
+                </div>
+            </header>
+
+            <!-- Dashboard Stats -->
+            <section class="dashboard-stats" id="statsContainer">
+                <!-- Cards injected by cards.js -->
+            </section>
+
+            <!-- Task Section -->
+            <section class="task-section">
+                <div class="task-header">
+                    <h2>Daftar Tugas</h2>
+                    <div class="task-actions">
+                        <div class="filter-dropdown">
+                            <select id="filterSelect">
+                                <option value="all">Semua Tugas</option>
+                                <option value="pending">Belum Selesai</option>
+                                <option value="completed">Selesai</option>
+                            </select>
+                        </div>
+                        <button class="btn-primary" id="addTaskBtn">
+                            <i class="fa-solid fa-plus"></i> Tambah Tugas
+                        </button>
+                    </div>
+                </div>
+
+                <div class="task-list-container">
+                    <!-- Loading Skeleton -->
+                    <div id="loadingSkeleton" class="skeleton-container">
+                        <div class="skeleton-item"></div>
+                        <div class="skeleton-item"></div>
+                        <div class="skeleton-item"></div>
+                    </div>
+
+                    <!-- Task List -->
+                    <ul class="task-list" id="taskList" style="display: none;">
+                        <!-- Tasks injected by script.js -->
+                    </ul>
+
+                    <!-- Empty State -->
+                    <div class="empty-state" id="emptyState" style="display: none;">
+                        <div class="empty-icon">
+                            <i class="fa-solid fa-clipboard-check"></i>
+                        </div>
+                        <h3>Tidak ada tugas</h3>
+                        <p>Mulai tambahkan tugas baru untuk meningkatkan produktivitasmu.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Settings Section -->
+            <section class="settings-section" id="settingsSection" style="display: none;">
+                <div class="settings-card glass-effect">
+                    <h2>Pengaturan Tampilan</h2>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <h3>Tema Aplikasi</h3>
+                            <p>Pilih mode terang atau gelap untuk kenyamanan mata.</p>
+                        </div>
+                        <button id="settingsThemeBtn" class="btn-secondary">
+                            <i class="fa-solid fa-moon"></i> Ganti Tema
+                        </button>
+                    </div>
+                    
+                    <h2 style="margin-top: 32px;">Manajemen Data</h2>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <h3>Hapus Semua Data</h3>
+                            <p>Tindakan ini akan menghapus semua tugas secara permanen dari browser Anda.</p>
+                        </div>
+                        <button id="clearDataBtn" class="btn-danger">
+                            <i class="fa-solid fa-trash-can"></i> Hapus Semua Data
+                        </button>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Task Modal -->
+    <div class="modal-overlay" id="taskModal">
+        <div class="modal-content glass-effect">
+            <div class="modal-header">
+                <h3 id="modalTitle">Tambah Tugas Baru</h3>
+                <button class="close-modal" id="closeModalBtn">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="taskForm">
+                    <input type="hidden" id="taskId">
+                    <div class="form-group">
+                        <label for="taskTitle">Nama Tugas</label>
+                        <input type="text" id="taskTitle" placeholder="Masukkan nama tugas..." required>
+                    </div>
+                    <div class="form-group">
+                        <label for="taskCategory">Kategori</label>
+                        <select id="taskCategory">
+                            <option value="Work">Kerjaan</option>
+                            <option value="Personal">Personal</option>
+                            <option value="Study">Belajar</option>
+                        </select>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn-secondary" id="cancelModalBtn">Batal</button>
+                        <button type="submit" class="btn-primary">Simpan</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal-overlay" id="deleteModal">
+        <div class="modal-content glass-effect modal-sm">
+            <div class="modal-body text-center">
+                <div class="warning-icon">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                </div>
+                <h3>Hapus Tugas?</h3>
+                <p>Apakah Anda yakin ingin menghapus tugas ini? Tindakan ini tidak dapat dibatalkan.</p>
+                <div class="form-actions justify-center mt-4">
+                    <button type="button" class="btn-secondary" id="cancelDeleteBtn">Batal</button>
+                    <button type="button" class="btn-danger" id="confirmDeleteBtn">Hapus</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Firebase SDK (Compat Version) -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
+    <!-- Scripts loaded synchronously to ensure correct order without ES Module CORS issues -->
+    <script src="components/firebase-config.js"></script>
+    <script src="data/mockData.js"></script>
+    <script src="components/sidebar.js"></script>
+    <script src="components/toast.js"></script>
+    <script src="components/cards.js"></script>
+    <script src="components/modal.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
